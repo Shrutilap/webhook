@@ -10,7 +10,6 @@ def webhook():
         print("\n📥 Webhook received:")
         print(json.dumps(data, indent=2))
 
-        # You can also save it to a file if needed
         with open('last_webhook.json', 'w') as f:
             json.dump(data, f, indent=2)
 
@@ -18,6 +17,16 @@ def webhook():
 
     except Exception as e:
         print(f"❌ Error: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# ✅ Route to fetch the full last webhook payload
+@app.route('/last-webhook', methods=['GET'])
+def get_last_webhook():
+    try:
+        with open('last_webhook.json', 'r') as f:
+            data = json.load(f)
+        return jsonify(data), 200
+    except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
